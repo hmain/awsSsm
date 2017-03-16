@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SSM EC2 and SSM Automation roles
+Metadata:
+  Comments: Development
+  LastUpdated: 2017 02 16
+  UpdatedBy: Hamin Mousavi
+  Version: '0.1'
+Resources:
+  AmazonEC2RoleforSSM:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [ec2.amazonaws.com, ssm.amazonaws.com]
+      ManagedPolicyArns: ['arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM']
+      Path: /
+    Type: AWS::IAM::Role
+  AutomationServiceRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [ec2.amazonaws.com, ssm.amazonaws.com]
+      ManagedPolicyArns: ['arn:aws:iam::aws:policy/service-role/AmazonSSMAutomationRole']
+      Path: /
+    Type: AWS::IAM::Role
+  InstanceProfile:
+    Properties:
+      Roles: [!Ref 'AmazonEC2RoleforSSM']
+    Type: AWS::IAM::InstanceProfile
+  MaintenanceWindowRole:
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+        - Action: ['sts:AssumeRole']
+          Effect: Allow
+          Principal:
+            Service: [ec2.amazonaws.com, ssm.amazonaws.com]
+      ManagedPolicyArns: ['arn:aws:iam::aws:policy/service-role/AmazonSSMMaintenanceWindowRole']
+      Path: /
+    Type: AWS::IAM::Role
+
